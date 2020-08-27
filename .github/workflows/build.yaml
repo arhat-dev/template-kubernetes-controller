@@ -1,0 +1,35 @@
+name: Test
+
+on:
+  check_run:
+    types:
+    - rerequested
+    - requested_action
+  pull_request:
+    branches:
+    - $default-branch
+  push:
+    branches:
+    - $default-branch
+    tags:
+    - v*
+
+jobs:
+  build-images:
+    needs:
+    - test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and push
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        GITHUB_DOCKER_USERNAME: ${{ secrets.GITHUB_DOCKER_USERNAME }}
+        GITHUB_DOCKER_PASSWORD: ${{ secrets.GITHUB_DOCKER_PASSWORD }}
+      run: |
+        docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
+        docker login docker.pkg.github.com -u="$GITHUB_DOCKER_USERNAME" -p="$GITHUB_DOCKER_PASSWORD"
+        make image.build.all
+        make image.push.all
