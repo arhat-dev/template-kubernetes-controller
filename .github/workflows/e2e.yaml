@@ -7,10 +7,10 @@ on:
     - requested_action
   pull_request:
     branches:
-    - $default-branch
+    - master
   push:
     branches:
-    - $default-branch
+    - master
     tags:
     - v*
 
