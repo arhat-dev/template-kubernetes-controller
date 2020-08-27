@@ -16,51 +16,6 @@
 
 . scripts/image/common.sh
 
-_ensure_manifest() {
-  comp="$1"
-  os="$2"
-  arch="$3"
-
-  args=""
-  case "${arch}" in
-    amd64)
-      args="--arch amd64 --os ${os}"
-      ;;
-    armv6)
-      args="--arch arm --variant v6 --os ${os}"
-      ;;
-    armv7)
-      args="--arch arm --variant v7 --os ${os}"
-      ;;
-    arm64)
-      args="--arch arm64 --os ${os}"
-      ;;
-    *)
-      echo "unsupported arch"
-      exit 1
-      ;;
-  esac
-
-  tag_prefix="$(_get_tag_prefix_by_os "$os")"
-
-  for r in ${IMAGE_REPOS}; do
-    for t in ${MANIFEST_TAGS}; do
-      image_name="${r}/${comp}:${tag_prefix}${arch}"
-      manifest_name="${r}/${comp}:${t}"
-
-      docker manifest create "${manifest_name}" \
-        "${image_name}" || true
-
-      docker manifest create "${manifest_name}" \
-        --amend "${image_name}"
-
-      # shellcheck disable=SC2086
-      docker manifest annotate "${manifest_name}" \
-        "${image_name}" ${args}
-    done
-  done
-}
-
 _build_image() {
   comp="$1"
   os="$2"
@@ -84,12 +39,10 @@ _build_image() {
     --build-arg TARGET="${comp}.${os}.${arch}" \
     --build-arg ARCH="${arch}" \
     --build-arg APP="${comp}" .
-
-  _ensure_manifest "${comp}" "${os}" "${arch}"
 }
 
-COMP=$(printf "%s" "$@" | cut -d\. -f3)
-OS=$(printf "%s" "$@" | cut -d\. -f4)
-ARCH=$(printf "%s" "$@" | cut -d\. -f5)
+comp=$(printf "%s" "$@" | cut -d\. -f3)
+os=$(printf "%s" "$@" | cut -d\. -f4)
+arch=$(printf "%s" "$@" | cut -d\. -f5)
 
-_build_image "${COMP}" "${OS}" "${ARCH}"
+_build_image "${comp}" "${os}" "${arch}"
