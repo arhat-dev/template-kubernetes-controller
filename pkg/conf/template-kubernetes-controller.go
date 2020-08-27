@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// nolint:lll
 type TemplateKubernetesControllerConfig struct {
 	TemplateKubernetesController TemplateKubernetesControllerAppConfig `json:"templateKubernetesController" yaml:"templateKubernetesController"`
 }

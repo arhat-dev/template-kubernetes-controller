@@ -12,5 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-test:
-	sh scripts/test/unit.sh
+test.pkg:
+	sh scripts/test/unit.sh pkg
+
+test.cmd:
+	sh scripts/test/unit.sh cmd

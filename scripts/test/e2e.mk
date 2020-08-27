@@ -13,10 +13,10 @@
 # limitations under the License.
 
 e2e.v1-18:
-	sh scripts/test/e2e.sh $@
+	sh scripts/test/e2e.sh v1-18
 
 e2e.v1-17:
-	sh scripts/test/e2e.sh $@
+	sh scripts/test/e2e.sh v1-17
 
 e2e.v1-16:
-	sh scripts/test/e2e.sh $@
+	sh scripts/test/e2e.sh v1-16

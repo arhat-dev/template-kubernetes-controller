@@ -81,3 +81,5 @@ dive.log
 /test
 .DS_Store
 /.env
+
+coverage*.txt

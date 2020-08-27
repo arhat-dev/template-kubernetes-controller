@@ -1,5 +1,7 @@
 package constant
 
+type ContextKey string
+
 const (
-	ContextKeyConfig = "config"
+	ContextKeyConfig = ContextKey("config")
 )

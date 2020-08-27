@@ -31,5 +31,6 @@ jobs:
       run: |
         docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
         docker login docker.pkg.github.com -u="$GITHUB_DOCKER_USERNAME" -p="$GITHUB_DOCKER_PASSWORD"
+
         make image.build.all
         make image.push.all

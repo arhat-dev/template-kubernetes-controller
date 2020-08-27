@@ -1,10 +1,12 @@
 package samplecrd
 
 import (
-	"arhat.dev/template-kubernetes-controller/pkg/conf"
 	"context"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kubeclient "k8s.io/client-go/kubernetes"
+
+	"arhat.dev/template-kubernetes-controller/pkg/conf"
 )
 
 // CheckAPIVersionFallback is just a static library check for the api resource fallback if discovery failed,
@@ -43,7 +45,11 @@ func CheckAPIVersionFallback(kubeClient kubeclient.Interface) []*metav1.APIResou
 	return ret
 }
 
-func NewController(appCtx context.Context, config *conf.TemplateKubernetesControllerConfig, preferredApis []*metav1.APIResourceList) (*Controller, error) {
+func NewController(
+	appCtx context.Context,
+	config *conf.TemplateKubernetesControllerConfig,
+	preferredApis []*metav1.APIResourceList,
+) (*Controller, error) {
 	return &Controller{}, nil
 }
 

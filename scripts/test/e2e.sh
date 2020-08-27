@@ -66,3 +66,7 @@ e2e() {
   # e2e test time limit
   sleep 3600
 }
+
+kube_version="$1"
+
+e2e "${kube_version}"

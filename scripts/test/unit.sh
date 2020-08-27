@@ -14,6 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-unit() {
-    :
+common_go_test_env="GOOS=$(go env GOHOSTOS) GOARCH=$(go env GOHOSTARCH)"
+common_go_test_flags="-mod=readonly -v -failfast -covermode=atomic"
+
+pkg() {
+    go_test="${common_go_test_env} CGO_ENABLED=1 go test ${common_go_test_flags} -race -coverprofile=coverage.pkg.txt -coverpkg=./pkg/... ./pkg/..."
+
+    set -ex
+    eval "${go_test}"
 }
+
+cmd() {
+    go_test="${common_go_test_env} CGO_ENABLED=0 go test ${common_go_test_flags} -coverprofile=coverage.cmd.txt -coverpkg=./cmd/... ./cmd/..."
+
+    set -ex
+    eval "${go_test}"
+}
+
+$1

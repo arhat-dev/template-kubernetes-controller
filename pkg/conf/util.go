@@ -51,6 +51,7 @@ func ReadConfig(
 
 	if len(configBytes) > 0 {
 		configStr := envhelper.Expand(string(configBytes), func(s, origin string) string {
+			// nolint:gocritic
 			switch s {
 			// TODO: add special cases if any
 			default:

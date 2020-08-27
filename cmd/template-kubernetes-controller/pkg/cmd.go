@@ -69,8 +69,10 @@ func NewTemplateKubernetesControllerCmd() *cobra.Command {
 
 	flags := templateKubernetesControllerCmd.PersistentFlags()
 
-	flags.StringVarP(&configFile, "config", "c", constant.DefaultTemplateKubernetesControllerConfigFile, "path to the templateKubernetesController config file")
-	flags.AddFlagSet(confhelper.FlagsForControllerConfig("templateKubernetesController", "", cliLogConfig, &config.TemplateKubernetesController.ControllerConfig))
+	flags.StringVarP(&configFile, "config", "c", constant.DefaultTemplateKubernetesControllerConfigFile,
+		"path to the templateKubernetesController config file")
+	flags.AddFlagSet(confhelper.FlagsForControllerConfig("templateKubernetesController", "", cliLogConfig,
+		&config.TemplateKubernetesController.ControllerConfig))
 	flags.AddFlagSet(conf.FlagsForTemplateKubernetesController("", &config.TemplateKubernetesController))
 
 	return templateKubernetesControllerCmd
@@ -107,7 +109,8 @@ func run(appCtx context.Context, config *conf.TemplateKubernetesControllerConfig
 	}()
 
 	logger.V("creating leader elector")
-	elector, err := config.TemplateKubernetesController.LeaderElection.CreateElector("templateKubernetesController", kubeClient,
+	elector, err := config.TemplateKubernetesController.
+		LeaderElection.CreateElector("templateKubernetesController", kubeClient,
 		evb.NewRecorder(scheme.Scheme, corev1.EventSource{
 			Component: "templateKubernetesController",
 		}),

@@ -14,6 +14,9 @@ on:
     tags:
     - v*
 
+env:
+  GO111MODULE: "on"
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -26,13 +29,21 @@ jobs:
 
       - name: Ensure tidy gomod
         run: |
-          go mod download
+          go mod download -x
           go mod tidy
           if ! git diff --exit-code
           then
             echo "go mod not tidy"
             exit 1
           fi
+
+      - name: Cache gomod
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Lint
         uses: golangci/golangci-lint-action@v1

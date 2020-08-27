@@ -84,7 +84,7 @@ _build_image() {
     --build-arg TARGET="${comp}.${os}.${arch}" \
     --build-arg ARCH="${arch}" \
     --build-arg APP="${comp}" .
-  
+
   _ensure_manifest "${comp}" "${os}" "${arch}"
 }
 

@@ -28,3 +28,20 @@ jobs:
       with:
         go-version: ${{ matrix.go-version }}
     - uses: actions/checkout@v2
+    - name: Ensure gomod
+      run: |
+        go mod download -x
+
+    - name: Test packages
+      run: |
+        make test.pkg
+
+    - name: Test commands
+      run: |
+        make test.cmd
+
+    - name: Report coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+        # fail_ci_if_error: true # optional (default = false)
