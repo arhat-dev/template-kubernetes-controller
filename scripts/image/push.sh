@@ -68,13 +68,13 @@ _push_image() {
   os="$2"
   arch="$3"
 
-  _ensure_manifest "${comp}" "${os}" "${arch}"
-
   tag_prefix="$(_get_tag_prefix_by_os "$os")"
 
   for r in ${IMAGE_REPOS}; do
     docker push "${r}/${comp}:${tag_prefix}${arch}"
   done
+
+  _ensure_manifest "${comp}" "${os}" "${arch}"
 
   for r in ${IMAGE_REPOS}; do
     for t in ${MANIFEST_TAGS}; do
