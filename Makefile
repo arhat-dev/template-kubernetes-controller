@@ -14,6 +14,7 @@
 
 # IMAGE_REPOS is the comma separated list of image registries
 IMAGE_REPOS ?= docker.io/arhatdev,docker.pkg.github.com/arhat-dev/template-kubernetes-controller
+
 export IMAGE_REPOS
 
 DEFAULT_IMAGE_MANIFEST_TAG ?= latest

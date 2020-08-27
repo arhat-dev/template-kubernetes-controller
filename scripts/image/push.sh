@@ -74,11 +74,11 @@ _push_image() {
     docker push "${r}/${comp}:${tag_prefix}${arch}"
   done
 
-  _ensure_manifest "${comp}" "${os}" "${arch}"
+  _ensure_manifest "${comp}" "${os}" "${arch}" || true
 
   for r in ${IMAGE_REPOS}; do
     for t in ${MANIFEST_TAGS}; do
-      docker manifest push "${r}/${comp}:${t}"
+      docker manifest push "${r}/${comp}:${t}" || true
     done
   done
 }
