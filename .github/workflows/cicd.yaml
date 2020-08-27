@@ -1,0 +1,124 @@
+name: CICD
+
+on:
+  check_run:
+    types:
+    - rerequested
+    - requested_action
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+    tags:
+    - v*
+
+env:
+  GO111MODULE: "on"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+
+      - name: Check commit
+        uses: pre-commit/action@v2.0.0
+
+      - name: Ensure tidy gomod
+        run: |
+          go mod download -x
+          go mod tidy
+          if ! git diff --exit-code
+          then
+            echo "go mod not tidy"
+            exit 1
+          fi
+
+      - name: Cache gomod
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v1
+        with:
+          version: v1.29
+          args: --issues-exit-code=1
+          only-new-issues: true
+
+  test:
+    needs:
+    - check
+    strategy:
+      matrix:
+        go-version: [1.13.x, 1.14.x, 1.15.x]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+    - uses: actions/checkout@v2
+    - name: Ensure gomod
+      run: |
+        go mod download -x
+
+    - name: Test packages
+      run: |
+        make test.pkg
+
+    - name: Test commands
+      run: |
+        make test.cmd
+
+    - name: Report coverage
+      uses: codecov/codecov-action@v1
+      # with:
+      #   token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+      #   fail_ci_if_error: true # optional (default = false)
+
+  build-images:
+    needs:
+    - check
+    - test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: build and push
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        GITHUB_DOCKER_USERNAME: ${{ github.actor }}
+        GITHUB_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
+        docker login docker.pkg.github.com -u="$GITHUB_DOCKER_USERNAME" -p="$GITHUB_DOCKER_PASSWORD"
+
+        make image.build.all
+        make image.push.all
+
+  e2e:
+    needs:
+    - check
+    - test
+    - build-images
+    strategy:
+      matrix:
+        kubernetes-version: [v1-16, v1-17, v1-18]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install KinD
+      run: |
+        curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
+        chmod +x /usr/local/bin/kind
+
+    - name: Test on Kubernetes ${{ matrix.kubernetes-version }}
+      run: |
+        make e2e.${{ matrix.kubernetes-version }}
