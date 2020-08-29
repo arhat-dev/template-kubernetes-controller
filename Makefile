@@ -20,6 +20,7 @@ export IMAGE_REPOS
 DEFAULT_IMAGE_MANIFEST_TAG ?= latest
 
 GOMOD := GOPROXY=direct GOSUMDB=off go mod
+.PHONY: vendor
 vendor:
 	${GOMOD} tidy
 	${GOMOD} vendor

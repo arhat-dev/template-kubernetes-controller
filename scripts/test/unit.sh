@@ -15,7 +15,7 @@
 # limitations under the License.
 
 common_go_test_env="GOOS=$(go env GOHOSTOS) GOARCH=$(go env GOHOSTARCH)"
-common_go_test_flags="-mod=readonly -v -failfast -covermode=atomic"
+common_go_test_flags="-mod=vendor -v -failfast -covermode=atomic"
 
 pkg() {
     go_test="${common_go_test_env} CGO_ENABLED=1 go test ${common_go_test_flags} -race -coverprofile=coverage.pkg.txt -coverpkg=./pkg/... ./pkg/..."

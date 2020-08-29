@@ -285,7 +285,7 @@ GOBUILD="GO111MODULE=on \
   go build \
   -trimpath \
   -buildmode=${BUILD_MODE:-default} \
-  -mod=readonly \
+  -mod=vendor \
   -ldflags='${GO_LDFLAGS}' \
   -o build/${COMP}.${GOOS}.${ARCH}${GOEXE}"
 

@@ -1,7 +1,7 @@
 run:
   deadline: 5m
   tests: true
-  modules-download-mode: readonly
+  modules-download-mode: vendor
   skip-dirs: []
   build-tags: []
 
