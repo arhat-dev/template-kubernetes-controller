@@ -22,9 +22,13 @@ if [ -z "${IMAGE_REPOS}" ]; then
     exit 1
 fi
 
-MANIFEST_TAGS="${DEFAULT_IMAGE_MANIFEST_TAG:-latest}"
+MANIFEST_TAG=""
 if [ -n "${GIT_TAG}" ]; then
-  MANIFEST_TAGS="${MANIFEST_TAGS} ${GIT_TAG}"
+  MANIFEST_TAG="${GIT_TAG}"
+elif [ "${GIT_BRANCH}" = "master" ]; then
+  MANIFEST_TAG="${DEFAULT_IMAGE_MANIFEST_TAG:-latest}"
+elif [ -n "${GIT_COMMIT}" ]; then
+  MANIFEST_TAG="${GIT_COMMIT}"
 fi
 
 _get_tag_prefix_by_os() {
@@ -42,4 +46,20 @@ _get_tag_prefix_by_os() {
       exit 1
       ;;
   esac
+}
+
+_get_image_name() {
+  repo="$1"
+  comp="$2"
+  os="$3"
+  arch="$4"
+
+  printf "%s/%s:%s%s%s" "${repo}" "${comp}" "$(_get_tag_prefix_by_os "${os}")" "${arch}" "${MANIFEST_TAG}"
+}
+
+_get_image_manifest_name() {
+  repo="$1"
+  comp="$2"
+
+  printf "%s/%s:%s" "${repo}" "${comp}" "${MANIFEST_TAG}"
 }

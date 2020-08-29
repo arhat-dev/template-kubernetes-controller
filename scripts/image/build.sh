@@ -21,11 +21,10 @@ _build_image() {
   os="$2"
   arch="$3"
   dockerfile="cicd/docker/${comp}.dockerfile"
-  tag_prefix="$(_get_tag_prefix_by_os "$os")"
 
   image_names=""
-  for r in ${IMAGE_REPOS}; do
-    image_names="-t ${r}/${comp}:${tag_prefix}${arch} ${image_names}"
+  for repo in ${IMAGE_REPOS}; do
+    image_names="-t $(_get_image_name "${repo}" "${comp}" "${os}" "${arch}") ${image_names}"
   done
 
   if [ -z "${image_names}" ]; then

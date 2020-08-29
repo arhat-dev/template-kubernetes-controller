@@ -43,23 +43,19 @@ _ensure_manifest() {
       ;;
   esac
 
-  tag_prefix="$(_get_tag_prefix_by_os "$os")"
+  for repo in ${IMAGE_REPOS}; do
+    image_name="$(_get_image_name "${repo}" "${comp}" "${os}" "${arch}")"
+    manifest_name="$(_get_image_manifest_name "${repo}" "${comp}")"
 
-  for r in ${IMAGE_REPOS}; do
-    for t in ${MANIFEST_TAGS}; do
-      image_name="${r}/${comp}:${tag_prefix}${arch}"
-      manifest_name="${r}/${comp}:${t}"
+    docker manifest create "${manifest_name}" \
+      "${image_name}" || true
 
-      docker manifest create "${manifest_name}" \
-        "${image_name}" || true
+    docker manifest create "${manifest_name}" \
+      --amend "${image_name}"
 
-      docker manifest create "${manifest_name}" \
-        --amend "${image_name}"
-
-      # shellcheck disable=SC2086
-      docker manifest annotate "${manifest_name}" \
-        "${image_name}" ${args}
-    done
+    # shellcheck disable=SC2086
+    docker manifest annotate "${manifest_name}" \
+      "${image_name}" ${args}
   done
 }
 
@@ -68,18 +64,14 @@ _push_image() {
   os="$2"
   arch="$3"
 
-  tag_prefix="$(_get_tag_prefix_by_os "$os")"
-
-  for r in ${IMAGE_REPOS}; do
-    docker push "${r}/${comp}:${tag_prefix}${arch}"
+  for repo in ${IMAGE_REPOS}; do
+    docker push "$(_get_image_name "${repo}" "${comp}" "${os}" "${arch}")"
   done
 
   _ensure_manifest "${comp}" "${os}" "${arch}" || true
 
-  for r in ${IMAGE_REPOS}; do
-    for t in ${MANIFEST_TAGS}; do
-      docker manifest push "${r}/${comp}:${t}" || true
-    done
+  for repo in ${IMAGE_REPOS}; do
+    docker manifest push "$(_get_image_manifest_name "${repo}" "${comp}")" || true
   done
 }
 
