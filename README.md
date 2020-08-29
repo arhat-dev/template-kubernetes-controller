@@ -1,6 +1,6 @@
 # Template Kubernetes Controller
 
-[![CICD](https://github.com/arhat-dev/template-kubernetes-controller/workflows/CICD/badge.svg)](https://github.com/arhat-dev/template-kubernetes-controller/actions?query=workflow%3ACICD) [![GoDoc](https://godoc.org/arhat.dev/template-kubernetes-controller?status.svg)](https://godoc.org/arhat.dev/template-kubernetes-controller) [![GoReportCard](https://goreportcard.com/badge/goiiot/libmqtt)](https://goreportcard.com/report/arhat.dev/template-kubernetes-controller) [![codecov](https://codecov.io/gh/arhat-dev/template-kubernetes-controller/branch/master/graph/badge.svg)](https://codecov.io/gh/arhat-dev/template-kubernetes-controller)
+[![CI](https://github.com/arhat-dev/template-kubernetes-controller/workflows/CI/badge.svg)](https://github.com/arhat-dev/template-kubernetes-controller/actions?query=workflow%3ACI) [![GoDoc](https://godoc.org/arhat.dev/template-kubernetes-controller?status.svg)](https://godoc.org/arhat.dev/template-kubernetes-controller) [![GoReportCard](https://goreportcard.com/badge/goiiot/libmqtt)](https://goreportcard.com/report/arhat.dev/template-kubernetes-controller) [![codecov](https://codecov.io/gh/arhat-dev/template-kubernetes-controller/branch/master/graph/badge.svg)](https://codecov.io/gh/arhat-dev/template-kubernetes-controller)
 
 Template for a kubernetes controller
 
