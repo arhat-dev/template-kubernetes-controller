@@ -54,7 +54,7 @@ _get_image_name() {
   os="$3"
   arch="$4"
 
-  printf "%s/%s:%s%s%s" "${repo}" "${comp}" "$(_get_tag_prefix_by_os "${os}")" "${arch}" "${MANIFEST_TAG}"
+  printf "%s/%s:%s%s-%s" "${repo}" "${comp}" "$(_get_tag_prefix_by_os "${os}")" "${arch}" "${MANIFEST_TAG}"
 }
 
 _get_image_manifest_name() {

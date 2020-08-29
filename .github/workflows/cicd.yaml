@@ -37,14 +37,6 @@ jobs:
             exit 1
           fi
 
-      - name: Cache gomod
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
       - name: Lint
         uses: golangci/golangci-lint-action@v1
         with:
@@ -65,19 +57,15 @@ jobs:
       with:
         go-version: ${{ matrix.go-version }}
     - uses: actions/checkout@v2
-    - name: Ensure gomod
-      run: |
-        go mod download
-
-    - name: Test packages
+    - name: Test Packages
       run: |
         make test.pkg
 
-    - name: Test commands
+    - name: Test Commands
       run: |
         make test.cmd
 
-    - name: Report coverage
+    - name: Report Test Coverage
       uses: codecov/codecov-action@v1
       # with:
       #   token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
@@ -90,16 +78,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: build and push
+    - name: Build and Push Images
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         GITHUB_DOCKER_USERNAME: ${{ github.actor }}
         GITHUB_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        IMAGE_REPOS: docker.io/arhatdev,docker.pkg.github.com/arhat-dev/template-kubernetes-controller
       run: |
-        docker login -u="$DOCKERHUB_USERNAME" -p="$DOCKERHUB_PASSWORD"
-        docker login docker.pkg.github.com -u="$GITHUB_DOCKER_USERNAME" -p="$GITHUB_DOCKER_PASSWORD"
+        docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
+        docker login docker.pkg.github.com -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
 
         make image.build.all
         make image.push.all
@@ -114,11 +103,23 @@ jobs:
         kubernetes-version: [v1-16, v1-17, v1-18]
     runs-on: ubuntu-latest
     steps:
+    - name: Add PATH
+      run: |
+        mkdir -p "${HOME}/bin"
+        echo "::add-path::${HOME}/bin"
+
     - name: Install KinD
       run: |
-        curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
-        chmod +x /usr/local/bin/kind
+        curl -Lo "${HOME}/bin/kind" https://kind.sigs.k8s.io/dl/v0.8.1/kind-linux-amd64
+        chmod +x "${HOME}/bin/kind"
 
-    - name: Test on Kubernetes ${{ matrix.kubernetes-version }}
-      run: |
-        make e2e.${{ matrix.kubernetes-version }}
+    # TODO: open source helm-stack
+    # - name: Install helm-stack
+    #   run: |
+    #     curl -Lo "${HOME}/bin/helm-stack" https://
+    #     chmod +x "${HOME}/bin/helm-stack"
+
+    # TODO: enable e2e tests once helm-stack installed
+    # - name: Test on Kubernetes ${{ matrix.kubernetes-version }}
+    #   run: |
+    #     make e2e.${{ matrix.kubernetes-version }}
