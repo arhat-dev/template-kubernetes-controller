@@ -162,8 +162,9 @@ _get_debian_triple() {
 }
 
 _get_alpine_arch() {
-  case "${arch}" in
+  arch="$1"
 
+  case "${arch}" in
   armv5)
     # alpine doesn't have armv5 support
     ;;
@@ -209,6 +210,8 @@ _get_alpine_arch() {
 }
 
 _get_alpine_triple() {
+  arch="$1"
+
   case "${arch}" in
   armv5)
     # alpine doesn't have armv5 support though
