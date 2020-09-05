@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # IMAGE_REPOS is the comma separated list of image registries
-IMAGE_REPOS ?= docker.io/arhatdev,docker.pkg.github.com/arhat-dev/template-kubernetes-controller
+IMAGE_REPOS ?= docker.io/arhatdev,ghcr.io/arhat-dev
 
 export IMAGE_REPOS
 
