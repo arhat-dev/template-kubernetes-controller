@@ -19,6 +19,13 @@ export IMAGE_REPOS
 
 DEFAULT_IMAGE_MANIFEST_TAG ?= latest
 
+.PHONY: lint
+lint:
+	docker run -it --rm \
+		-e RUN_LOCAL=true \
+		-e DEFAULT_WORKSPACE=$(shell pwd) \
+		-v $(shell pwd):$(shell pwd) ghcr.io/github/super-linter:v3
+
 GOMOD := GOPROXY=direct GOSUMDB=off go mod
 .PHONY: vendor
 vendor:
@@ -32,8 +39,20 @@ include scripts/test/e2e.mk
 # binary build
 include scripts/build/template-kubernetes-controller.mk
 
-# image build
+# image
 include scripts/image/template-kubernetes-controller.mk
+
+image.build.linux.all: \
+	image.build.template-kubernetes-controller.linux.all
+
+image.build.windows.all: \
+	image.build.template-kubernetes-controller.windows.all
+
+image.push.linux.all: \
+	image.push.template-kubernetes-controller.linux.all
+
+image.push.windows.all: \
+	image.push.template-kubernetes-controller.windows.all
 
 # code/file generation
 include scripts/gen/code.mk
