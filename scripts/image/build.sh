@@ -20,7 +20,17 @@ _build_image() {
   comp="$1"
   os="$2"
   arch="$3"
-  dockerfile="cicd/docker/${comp}.dockerfile"
+
+  # try to find os:arch specific dockerfile
+  dockerfile="cicd/docker/${comp}.${os}.${arch}.dockerfile"
+  if [ ! -f "${dockerfile}" ]; then
+    # fallback to os:multi-arch dockerfile
+    dockerfile="cicd/docker/${comp}.${os}.dockerfile"
+    if [ ! -f "${dockerfile}" ]; then
+      echo "no such dockerfile ${dockerfile}"
+      exit 1
+    fi
+  fi
 
   image_names=""
   for repo in ${IMAGE_REPOS}; do

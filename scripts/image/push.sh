@@ -23,25 +23,18 @@ _ensure_manifest() {
   os="$2"
   arch="$3"
 
-  args=""
-  case "${arch}" in
-    amd64)
-      args="--arch amd64 --os ${os}"
-      ;;
-    armv6)
-      args="--arch arm --variant v6 --os ${os}"
-      ;;
-    armv7)
-      args="--arch arm --variant v7 --os ${os}"
-      ;;
-    arm64)
-      args="--arch arm64 --os ${os}"
-      ;;
-    *)
-      echo "unsupported arch"
-      exit 1
-      ;;
-  esac
+  manifest_arch="$(_get_docker_manifest_arch "${arch}")"
+  if [ -z "${manifest_arch}" ]; then
+    echo "unmapped arch ${arch} to docker manifest arch" >&2
+    exit 1
+  fi
+
+  args="--os ${os} --arch ${manifest_arch}"
+
+  variant="$(_get_docker_manifest_arch_variant "${arch}")"
+  if [ -n "${variant}" ]; then
+    args="${args} --variant ${variant}"
+  fi
 
   for repo in ${IMAGE_REPOS}; do
     image_name="$(_get_image_name "${repo}" "${comp}" "${os}" "${arch}")"

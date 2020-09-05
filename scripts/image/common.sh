@@ -31,6 +31,40 @@ elif [ -n "${GIT_COMMIT}" ]; then
   MANIFEST_TAG="${GIT_COMMIT}"
 fi
 
+_get_docker_manifest_arch() {
+  arch="$1"
+
+  case "${arch}" in
+  x86)
+    printf "386"
+    ;;
+  armv*)
+    # arm32v{5,6,7}
+    printf "arm"
+    ;;
+  arm64)
+    printf "arm64"
+    ;;
+  amd64 | mips64le | ppc64le | s390x)
+    printf "%s" "${arch}"
+    ;;
+  esac
+}
+
+_get_docker_manifest_arch_variant() {
+  arch="$1"
+
+  case "${arch}" in
+  armv*)
+    # arm32v{5,6,7}
+    printf "%d" "${arch#armv}"
+    ;;
+  *)
+    printf ""
+    ;;
+  esac
+}
+
 _get_tag_prefix_by_os() {
   os="$1"
 
