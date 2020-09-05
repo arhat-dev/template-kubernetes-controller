@@ -103,7 +103,7 @@ jobs:
   #       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
   #       GITHUB_DOCKER_USERNAME: ${{ github.actor }}
   #       GITHUB_DOCKER_PASSWORD: ${{ secrets.GH_PACKAGES_TOKEN }}
-  #       IMAGE_REPOS: docker.io/arhatdev,ghcr.io/arhat-dev/arhat-dev/template-kubernetes-controller
+  #       IMAGE_REPOS: docker.io/arhatdev,ghcr.io/arhat-dev/arhat-dev
   #     run: |
   #       docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
   #       docker login ghcr.io/arhat-dev -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
