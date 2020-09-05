@@ -55,7 +55,7 @@ jobs:
     - stylecheck
     strategy:
       matrix:
-        go-version: [1.13.x, 1.14.x, 1.15.x]
+        go-version: [1.14.x, 1.15.x]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -125,11 +125,15 @@ jobs:
     needs:
     - stylecheck
     - unit-tests
-    - build-images
+    - build-linux-images
+    # TODO: uncomment this after for windows e2e tests
+    # - build-windows-images
     strategy:
       matrix:
         kubernetes-version: [v1-16, v1-17, v1-18]
-    runs-on: ubuntu-latest
+        # TODO: support windows e2e tests
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Add PATH
       run: |
