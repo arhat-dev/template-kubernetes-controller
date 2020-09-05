@@ -19,12 +19,7 @@ export IMAGE_REPOS
 
 DEFAULT_IMAGE_MANIFEST_TAG ?= latest
 
-.PHONY: lint
-lint:
-	docker run -it --rm \
-		-e RUN_LOCAL=true \
-		-e DEFAULT_WORKSPACE=$(shell pwd) \
-		-v $(shell pwd):$(shell pwd) ghcr.io/github/super-linter:v3
+include scripts/lint.mk
 
 GOMOD := GOPROXY=direct GOSUMDB=off go mod
 .PHONY: vendor

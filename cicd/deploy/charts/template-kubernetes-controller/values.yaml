@@ -11,7 +11,7 @@ imagePullSecrets: []
 image:
   repository: docker.io/arhatdev/template-kubernetes-controller
   pullPolicy: Always
-  tag: "latest"
+  tag: latest
 
 rbac:
   create: true

@@ -16,7 +16,8 @@
 
 set -ex
 
-export GOPATH=$(go env GOPATH)
+GOPATH=$(go env GOPATH)
+export GOPATH
 
 CONTROLLER_GEN="${GOPATH}/bin/kube-controller-gen"
 
@@ -108,4 +109,5 @@ gen() {
   _do_gen_clients "${group_name}" "${group_version}"
 }
 
+# shellcheck disable=SC2068
 $@

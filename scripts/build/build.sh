@@ -94,7 +94,7 @@ case "${GOOS}" in
 esac
 
 CC="gcc"
-STRIP="strip"
+# STRIP="strip"
 CXX="g++"
 CFLAGS="-I/usr/include/glib-2.0 -I/usr/include"
 LDFLAGS=""
@@ -105,7 +105,7 @@ PM_APK=$(command -v apk || printf "")
 if [ -n "${PM_DEB}" ]; then
   TRIPLE="$(_get_debian_triple "${ARCH}")"
   if [ -n "${TRIPLE}" ]; then
-    PKG_CONFIG_PATH="/usr/lib/${TRIPLE}/pkgconfig"
+    # PKG_CONFIG_PATH="/usr/lib/${TRIPLE}/pkgconfig"
     CFLAGS="-I/usr/include/${TRIPLE} -I/usr/${TRIPLE}/include -I/usr/lib/${TRIPLE}/glib-2.0/include ${CFLAGS}"
     LDFLAGS="-L/lib/${TRIPLE} -L/usr/lib/${TRIPLE}"
   fi
@@ -129,7 +129,7 @@ fi
 if [ -n "${PM_APK}" ]; then
   TRIPLE="$(_get_alpine_triple "${ARCH}")"
   if [ -n "${TRIPLE}" ]; then
-    PKG_CONFIG_PATH="/${TRIPLE}/usr/lib/pkgconfig"
+    # PKG_CONFIG_PATH="/${TRIPLE}/usr/lib/pkgconfig"
     CFLAGS="-I/${TRIPLE}/include -I/${TRIPLE}/usr/include -I/${TRIPLE}/usr/lib/glib-2.0/include ${CFLAGS}"
     LDFLAGS="-L/${TRIPLE}/lib -L/${TRIPLE}/usr/lib"
   fi
@@ -154,7 +154,7 @@ fi
 if [ -n "${TRIPLE}" ]; then
   CC="${TRIPLE}-gcc"
   CXX="${TRIPLE}-g++"
-  STRIP="${TRIPLE}-strip"
+  # STRIP="${TRIPLE}-strip"
 fi
 
 CGO_FLAGS="CC=${CC} CXX=${CXX} CC_FOR_TARGET=${CC} CXX_FOR_TARGET=${CXX} CGO_CFLAGS_ALLOW='-W' CGO_CFLAGS='${CFLAGS}' CGO_LDFLAGS='${LDFLAGS}'"
