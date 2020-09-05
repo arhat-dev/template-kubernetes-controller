@@ -9,9 +9,3 @@ repos:
     exclude: cicd/deploy/charts/.*?/templates
     args:
     - --allow-multiple-documents
-
-- repo: https://github.com/dnephin/pre-commit-golang
-  rev: master
-  hooks:
-  - id: golangci-lint
-    args: [--fix]
