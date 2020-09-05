@@ -12,14 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# native
+template-kubernetes-controller:
+	sh scripts/build/build.sh $@
+
+# linux
 template-kubernetes-controller.linux.amd64:
 	sh scripts/build/build.sh $@
 
-template-kubernetes-controller.linux.armv6:
+template-kubernetes-controller.linux.arm64:
 	sh scripts/build/build.sh $@
 
 template-kubernetes-controller.linux.armv7:
 	sh scripts/build/build.sh $@
 
-template-kubernetes-controller.linux.arm64:
+template-kubernetes-controller.linux.armv6:
 	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.linux.x86:
+	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.linux.ppc64le:
+	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.linux.s390x:
+	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.linux.all: \
+	template-kubernetes-controller.linux.amd64 \
+	template-kubernetes-controller.linux.arm64 \
+	template-kubernetes-controller.linux.armv7 \
+	template-kubernetes-controller.linux.armv6 \
+	template-kubernetes-controller.linux.x86 \
+	template-kubernetes-controller.linux.ppc64le \
+	template-kubernetes-controller.linux.s390x
+
+# windows
+template-kubernetes-controller.windows.amd64:
+	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.windows.armv7:
+	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.windows.all: \
+	template-kubernetes-controller.windows.amd64 \
+	template-kubernetes-controller.windows.armv7
