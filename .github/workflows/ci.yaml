@@ -88,27 +88,28 @@ jobs:
         make image.build.linux.all
         make image.push.linux.all
 
-  build-windows-images:
-    needs:
-    - stylecheck
-    - unit-tests
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build and Push Images
-      env:
-        DOCKER_CLI_EXPERIMENTAL: enabled
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-        GITHUB_DOCKER_USERNAME: ${{ github.actor }}
-        GITHUB_DOCKER_PASSWORD: ${{ secrets.GH_PACKAGES_TOKEN }}
-        IMAGE_REPOS: docker.io/arhatdev,ghcr.io/arhat-dev/arhat-dev/template-kubernetes-controller
-      run: |
-        docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
-        docker login ghcr.io/arhat-dev -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
+  # TODO: Add support for windows image build in arhat-dev/dockerfile
+  # build-windows-images:
+  #   needs:
+  #   - stylecheck
+  #   - unit-tests
+  #   runs-on: windows-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Build and Push Images
+  #     env:
+  #       DOCKER_CLI_EXPERIMENTAL: enabled
+  #       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  #       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #       GITHUB_DOCKER_USERNAME: ${{ github.actor }}
+  #       GITHUB_DOCKER_PASSWORD: ${{ secrets.GH_PACKAGES_TOKEN }}
+  #       IMAGE_REPOS: docker.io/arhatdev,ghcr.io/arhat-dev/arhat-dev/template-kubernetes-controller
+  #     run: |
+  #       docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
+  #       docker login ghcr.io/arhat-dev -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
 
-        make image.build.windows.all
-        make image.push.windows.all
+  #       make image.build.windows.all
+  #       make image.push.windows.all
 
   e2e-tests:
     needs:

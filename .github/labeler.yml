@@ -16,6 +16,7 @@ ci:
 - any:
   - .github/**
   - cicd/gitlab/**
+  - .gitlab-ci.yml
 
 cd:
 - any:
