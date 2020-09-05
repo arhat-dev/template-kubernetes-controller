@@ -18,11 +18,17 @@ env:
   GO111MODULE: "on"
 
 jobs:
-  check:
+  stylecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
+      - uses: github/super-linter@v3
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: "."
 
       # - name: Check commit
       #   uses: pre-commit/action@v2.0.0
@@ -44,9 +50,9 @@ jobs:
           args: --issues-exit-code=1
           only-new-issues: true
 
-  test:
+  unit-tests:
     needs:
-    - check
+    - stylecheck
     strategy:
       matrix:
         go-version: [1.13.x, 1.14.x, 1.15.x]
@@ -71,10 +77,10 @@ jobs:
       #   token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
       #   fail_ci_if_error: true # optional (default = false)
 
-  build-images:
+  build-linux-images:
     needs:
-    - check
-    - test
+    - stylecheck
+    - unit-tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -90,13 +96,35 @@ jobs:
         docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
         docker login docker.pkg.github.com -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
 
-        make image.build.all
-        make image.push.all
+        make image.build.linux.all
+        make image.push.linux.all
 
-  e2e:
+  build-windows-images:
     needs:
-    - check
-    - test
+    - stylecheck
+    - unit-tests
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and Push Images
+      env:
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        GITHUB_DOCKER_USERNAME: ${{ github.actor }}
+        GITHUB_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        IMAGE_REPOS: docker.io/arhatdev,docker.pkg.github.com/arhat-dev/template-kubernetes-controller
+      run: |
+        docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
+        docker login docker.pkg.github.com -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
+
+        make image.build.windows.all
+        make image.push.windows.all
+
+  e2e-tests:
+    needs:
+    - stylecheck
+    - unit-tests
     - build-images
     strategy:
       matrix:

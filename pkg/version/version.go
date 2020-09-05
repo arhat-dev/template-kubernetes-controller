@@ -16,10 +16,14 @@ limitations under the License.
 
 package version
 
-import "fmt"
+import (
+	"fmt"
+	"runtime"
+)
 
 var (
 	branch, commit, tag, arch string
+	goCompilerPlatform        string
 )
 
 var version string
@@ -29,7 +33,9 @@ func init() {
 commit: %s
 tag: %s
 arch: %s
-`, branch, commit, tag, arch)
+goVersion: %s
+goCompilerPlatform: %s
+`, Branch(), Commit(), Tag(), Arch(), GoVersion(), GoCompilerPlatform())
 }
 
 func Version() string {
@@ -53,4 +59,12 @@ func Tag() string {
 
 func Arch() string {
 	return arch
+}
+
+func GoVersion() string {
+	return runtime.Version()
+}
+
+func GoCompilerPlatform() string {
+	return goCompilerPlatform
 }

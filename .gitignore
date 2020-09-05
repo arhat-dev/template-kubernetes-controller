@@ -83,3 +83,4 @@ dive.log
 /.env
 
 coverage*.txt
+*.log

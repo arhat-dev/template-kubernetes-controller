@@ -1,0 +1,6 @@
+stylecheck:
+  image: docker:stable
+  services:
+  - docker:stable-dind
+  script:
+  - make lint
