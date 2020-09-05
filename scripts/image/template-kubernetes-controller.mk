@@ -54,6 +54,9 @@ image.build.template-kubernetes-controller.windows.all: \
 	image.build.template-kubernetes-controller.windows.armv7
 
 # push
+image.push.template-kubernetes-controller.linux.x86:
+	sh scripts/image/push.sh $@
+
 image.push.template-kubernetes-controller.linux.amd64:
 	sh scripts/image/push.sh $@
 
