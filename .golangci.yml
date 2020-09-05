@@ -2,7 +2,8 @@ run:
   deadline: 5m
   tests: true
   modules-download-mode: vendor
-  skip-dirs: []
+  skip-dirs:
+  - vendor
   build-tags: []
 
 output:
