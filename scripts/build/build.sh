@@ -40,8 +40,8 @@ CMD=$(printf "%s" "$@" | tr '-' '_' | tr '.'  ' ')
 
 # CMD format: {comp} {os} {arch}
 
-GOOS="$(printf "%s" "${CMD}" | cut -d. -f2 || true)"
-ARCH="$(printf "%s" "${CMD}" | cut -d. -f3 || true)"
+GOOS="$(printf "%s" "$@" | cut -d. -f2 || true)"
+ARCH="$(printf "%s" "$@" | cut -d. -f3 || true)"
 
 if [ -z "${GOOS}" ] || [ "${GOOS}" = "$(printf "%s" "${COMP}" | tr '-' '_')" ]; then
   # fallback to goos and goarch values
