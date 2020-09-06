@@ -1,7 +1,5 @@
 /.idea
-/.github
+/.vscode
 
-/test
 /build
-/docs
 /private

@@ -2,7 +2,6 @@ variables:
   CI_DEBUG_TRACE: "false"
 
   IMAGE_REPOS: ${CI_REGISTRY_IMAGE}
-  DEFAULT_IMAGE_MANIFEST_TAG: ${CI_COMMIT_SHA}
 
   DOCKER_CLI_EXPERIMENTAL: enabled # required to enable `docker manifests`
   DOCKER_HOST: tcp://localhost:2375
