@@ -4,6 +4,7 @@ run:
   modules-download-mode: vendor
   skip-dirs:
   - vendor
+  - generated
   build-tags: []
 
 output:
