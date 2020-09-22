@@ -63,7 +63,7 @@ func ReadConfig(
 			}
 		})
 
-		if err = yaml.Unmarshal([]byte(configStr), config); err != nil {
+		if err = yaml.UnmarshalStrict([]byte(configStr), config); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal config file %s: %v", *configFile, err)
 		}
 	}
