@@ -1,4 +1,4 @@
-ARG ARCH=amd64
+ARG ARCH=mips64le
 
 # usually a kubernetes controller do not use cgo so
 # we can build on alpine and copy it to debian
