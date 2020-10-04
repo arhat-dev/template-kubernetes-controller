@@ -29,10 +29,16 @@ template-kubernetes-controller.linux.armv7:
 template-kubernetes-controller.linux.armv6:
 	sh scripts/build/build.sh $@
 
+template-kubernetes-controller.linux.armv5:
+	sh scripts/build/build.sh $@
+
 template-kubernetes-controller.linux.x86:
 	sh scripts/build/build.sh $@
 
 template-kubernetes-controller.linux.ppc64le:
+	sh scripts/build/build.sh $@
+
+template-kubernetes-controller.linux.mips64le:
 	sh scripts/build/build.sh $@
 
 template-kubernetes-controller.linux.s390x:
@@ -43,8 +49,10 @@ template-kubernetes-controller.linux.all: \
 	template-kubernetes-controller.linux.arm64 \
 	template-kubernetes-controller.linux.armv7 \
 	template-kubernetes-controller.linux.armv6 \
+	template-kubernetes-controller.linux.armv5 \
 	template-kubernetes-controller.linux.x86 \
 	template-kubernetes-controller.linux.ppc64le \
+	template-kubernetes-controller.linux.mips64le \
 	template-kubernetes-controller.linux.s390x
 
 # windows
