@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
     - master
+    - "!deps/**"
   push:
     branches:
     - master
@@ -18,8 +19,13 @@ on:
 env:
   GO111MODULE: "on"
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   stylecheck:
+    if: contains(github.head_ref, 'deps/') == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -41,22 +47,19 @@ jobs:
         make lint.all
 
   unit-tests:
+    if: contains(github.head_ref, 'deps/') == false
+    container:
+      image: arhatdev/builder-go:debian
     needs:
     - stylecheck
-    strategy:
-      matrix:
-        go:
-        - 1.14.x
-        # - 1.15.x
-        os:
-        - ubuntu-latest
-        # - windows-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go }}
+    # - name: Install Extra Packages (for cgo deps)
+    #   run: |
+    #     apt update
+    #     apt install -y \
+    #       python3-distutils=3.7.3-1 python3-lib2to3=3.7.3-1 python3=3.7.3-1
 
     - name: Test Packages
       run: |
@@ -73,12 +76,20 @@ jobs:
       #   fail_ci_if_error: true # optional (default = false)
 
   build-linux-images:
+    if: contains(github.head_ref, 'deps/') == false
     needs:
     - stylecheck
     - unit-tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Install qemu-static
+      run: |
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+        sudo apt update
+        sudo apt install -y qemu-user-static
+
     - name: Build and Push Images
       env:
         DOCKER_CLI_EXPERIMENTAL: enabled
@@ -96,6 +107,7 @@ jobs:
 
   # TODO: Add support for windows image build in arhat-dev/dockerfile
   # build-windows-images:
+  #   if: contains(github.head_ref, 'deps/') == false
   #   needs:
   #   - stylecheck
   #   - unit-tests
@@ -109,7 +121,7 @@ jobs:
   #       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
   #       GITHUB_DOCKER_USERNAME: ${{ github.actor }}
   #       GITHUB_DOCKER_PASSWORD: ${{ secrets.GH_PACKAGES_TOKEN }}
-  #       IMAGE_REPOS: docker.io/arhatdev,ghcr.io/arhat-dev/arhat-dev
+  #       IMAGE_REPOS: docker.io/arhatdev,ghcr.io/arhat-dev
   #     run: |
   #       docker login docker.io -u="${DOCKERHUB_USERNAME}" -p="${DOCKERHUB_PASSWORD}"
   #       docker login ghcr.io/arhat-dev -u="${GITHUB_DOCKER_USERNAME}" -p="${GITHUB_DOCKER_PASSWORD}"
