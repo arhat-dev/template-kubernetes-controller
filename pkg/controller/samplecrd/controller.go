@@ -63,7 +63,7 @@ func CheckAPIVersionFallback(kubeClient kubeclient.Interface) []*metav1.APIResou
 
 func NewController(
 	appCtx context.Context,
-	config *conf.TemplateKubernetesControllerConfig,
+	config *conf.Config,
 	preferredApis []*metav1.APIResourceList,
 ) (*Controller, error) {
 	return &Controller{}, nil

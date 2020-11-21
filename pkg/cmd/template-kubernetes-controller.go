@@ -18,11 +18,13 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
 
-	"arhat.dev/pkg/confhelper"
 	"arhat.dev/pkg/envhelper"
+	"arhat.dev/pkg/kubehelper"
 	"arhat.dev/pkg/log"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
@@ -41,11 +43,11 @@ func NewTemplateKubernetesControllerCmd() *cobra.Command {
 	var (
 		appCtx       context.Context
 		configFile   string
-		config       = new(conf.TemplateKubernetesControllerConfig)
+		config       = new(conf.Config)
 		cliLogConfig = new(log.Config)
 	)
 
-	templateKubernetesControllerCmd := &cobra.Command{
+	appCmd := &cobra.Command{
 		Use:           "template-kubernetes-controller",
 		SilenceErrors: true,
 		SilenceUsage:  true,
@@ -67,33 +69,57 @@ func NewTemplateKubernetesControllerCmd() *cobra.Command {
 		},
 	}
 
-	flags := templateKubernetesControllerCmd.PersistentFlags()
+	flags := appCmd.PersistentFlags()
 
 	flags.StringVarP(&configFile, "config", "c", constant.DefaultTemplateKubernetesControllerConfigFile,
-		"path to the templateKubernetesController config file")
-	flags.AddFlagSet(confhelper.FlagsForControllerConfig("templateKubernetesController", "", cliLogConfig,
-		&config.TemplateKubernetesController.ControllerConfig))
-	flags.AddFlagSet(conf.FlagsForTemplateKubernetesController("", &config.TemplateKubernetesController))
+		"path to the app config file")
+	flags.AddFlagSet(kubehelper.FlagsForControllerConfig("app", "", cliLogConfig,
+		&config.App.ControllerConfig))
+	flags.AddFlagSet(conf.FlagsForTemplateKubernetesController("", &config.App))
 
-	return templateKubernetesControllerCmd
+	return appCmd
 }
 
-func run(appCtx context.Context, config *conf.TemplateKubernetesControllerConfig) error {
-	logger := log.Log.WithName("templateKubernetesController")
+func run(appCtx context.Context, config *conf.Config) error {
+	logger := log.Log.WithName("app")
 
 	logger.I("creating kube client for initialization")
-	kubeClient, _, err := config.TemplateKubernetesController.KubeClient.NewKubeClient(nil, false)
+	kubeClient, _, err := config.App.KubeClient.NewKubeClient(nil, false)
 	if err != nil {
 		return fmt.Errorf("failed to create kube client from kubeconfig: %w", err)
 	}
 
-	if err = config.TemplateKubernetesController.Metrics.RegisterIfEnabled(appCtx, logger); err != nil {
-		logger.E("failed to register metrics controller", log.Error(err))
-		return err
+	_, mtHandler, err := config.App.Metrics.CreateIfEnabled(true)
+	if err != nil {
+		return fmt.Errorf("failed to create metrics provider: %w", err)
 	}
 
-	if err = config.TemplateKubernetesController.Tracing.RegisterIfEnabled(appCtx, logger); err != nil {
-		logger.E("failed to register tracing controller")
+	if mtHandler != nil {
+		mux := http.NewServeMux()
+		mux.Handle(config.App.Metrics.HTTPPath, mtHandler)
+
+		tlsConfig, err2 := config.App.Metrics.TLS.GetTLSConfig(true)
+		if err2 != nil {
+			return fmt.Errorf("failed to get tls config for metrics listener: %w", err2)
+		}
+
+		srv := &http.Server{
+			Handler:   mux,
+			Addr:      config.App.Metrics.Endpoint,
+			TLSConfig: tlsConfig,
+		}
+
+		go func() {
+			err2 = srv.ListenAndServe()
+			if err2 != nil && !errors.Is(err2, http.ErrServerClosed) {
+				panic(err2)
+			}
+		}()
+	}
+
+	_, err = config.App.Tracing.CreateIfEnabled(true, nil)
+	if err != nil {
+		logger.E("failed to create tracing provider", log.Error(err))
 		return err
 	}
 
@@ -109,10 +135,9 @@ func run(appCtx context.Context, config *conf.TemplateKubernetesControllerConfig
 	}()
 
 	logger.V("creating leader elector")
-	elector, err := config.TemplateKubernetesController.
-		LeaderElection.CreateElector("templateKubernetesController", kubeClient,
+	elector, err := config.App.LeaderElection.CreateElector("app", kubeClient,
 		evb.NewRecorder(scheme.Scheme, corev1.EventSource{
-			Component: "templateKubernetesController",
+			Component: "app",
 		}),
 		// on elected
 		func(ctx context.Context) {
@@ -147,7 +172,7 @@ func onElected(
 	appCtx context.Context,
 	logger log.Interface,
 	kubeClient kubeclient.Interface,
-	config *conf.TemplateKubernetesControllerConfig,
+	config *conf.Config,
 ) error {
 	logger.I("won leader election")
 
