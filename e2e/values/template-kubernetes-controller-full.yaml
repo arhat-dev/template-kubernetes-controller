@@ -1,0 +1,6 @@
+replicaCount: 1
+
+image:
+  repository: localhost:5000/aranya
+  pullPolicy: Always
+  tag: test-e2e
