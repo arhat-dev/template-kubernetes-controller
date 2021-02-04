@@ -1,0 +1,12 @@
+environments:
+- name: v1-16
+  kubeContext: kind-v1-16
+  deployments:
+  - name: monitoring/promop
+    chart: prometheus-community/kube-prometheus-stack@12.7.0
+
+  - name: default/template-kubernetes-controller
+    chart: template-kubernetes-controller@master
+
+  - name: full/template-kubernetes-controller
+    chart: template-kubernetes-controller@master

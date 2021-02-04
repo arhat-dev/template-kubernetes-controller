@@ -16,5 +16,5 @@ gen.manifests.template-kubernetes-controller:
 	helm template \
 		template-kubernetes-controller \
 		cicd/deploy/charts/template-kubernetes-controller \
-		--include-crds --namespace ${NS} --debug \
+		--include-crds --namespace template-kubernetes-controller --debug \
 		| tee cicd/deploy/kube/template-kubernetes-controller.yaml

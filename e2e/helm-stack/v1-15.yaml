@@ -1,0 +1,14 @@
+environments:
+- name: v1-15
+  kubeContext: kind-v1-15
+  deployments:
+  - name: monitoring/promop
+    # for v1beta1 CRD
+    chart: bitnami/kube-prometheus@1.1.0
+    state: novalidation
+
+  - name: default/template-kubernetes-controller
+    chart: template-kubernetes-controller@master
+
+  - name: full/template-kubernetes-controller
+    chart: template-kubernetes-controller@master

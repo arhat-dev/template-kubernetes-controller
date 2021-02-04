@@ -13,6 +13,9 @@
 # limitations under the License.
 
 # build
+image.build.template-kubernetes-controller.linux.test:
+	sh scripts/image/build.sh $@
+
 image.build.template-kubernetes-controller.linux.x86:
 	sh scripts/image/build.sh $@
 
@@ -62,6 +65,9 @@ image.build.template-kubernetes-controller.windows.all: \
 	image.build.template-kubernetes-controller.windows.armv7
 
 # push
+image.push.template-kubernetes-controller.linux.test:
+	sh scripts/image/push.sh $@
+
 image.push.template-kubernetes-controller.linux.x86:
 	sh scripts/image/push.sh $@
 

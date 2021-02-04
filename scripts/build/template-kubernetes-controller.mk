@@ -16,6 +16,9 @@
 template-kubernetes-controller:
 	sh scripts/build/build.sh $@
 
+template-kubernetes-controller.linux.test:
+	sh scripts/build/build.sh $@
+
 # linux
 template-kubernetes-controller.linux.amd64:
 	sh scripts/build/build.sh $@
