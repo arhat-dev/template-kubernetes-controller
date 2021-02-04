@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package internal provides trace internals.
-package internal
+/*
+Package otlpgrpc provides an implementation of otlp.ProtocolDriver
+that connects to the collector and sends traces and metrics using
+gRPC.
 
-import "go.opentelemetry.io/otel/trace"
-
-// IDGenerator allows custom generators for TraceId and SpanId.
-type IDGenerator interface {
-	NewTraceID() trace.TraceID
-	NewSpanID() trace.SpanID
-}
+This package is currently in a pre-GA phase. Backwards incompatible
+changes may be introduced in subsequent minor version releases as we
+work to track the evolving OpenTelemetry specification and user
+feedback.
+*/
+package otlpgrpc // import "go.opentelemetry.io/otel/exporters/otlp/otlpgrpc"
