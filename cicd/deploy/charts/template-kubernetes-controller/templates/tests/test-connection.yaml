@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "template-kubernetes-controller.fullname" . }}-test-connection"
+  labels:
+    {{- include "template-kubernetes-controller.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "template-kubernetes-controller.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

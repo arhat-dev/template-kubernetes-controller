@@ -1,0 +1,16 @@
+apiVersion: v2
+name: template-kubernetes-controller
+description: Template kubernetes controller repo
+type: application
+maintainers:
+- name: arhat-dev
+  email: dev@arhat.dev
+keywords:
+- template-kubernetes-controller
+# icon: ""
+home: https://github.com/arhat-dev/template-kubernetes-controller
+sources:
+- https://github.com/arhat-dev/template-kubernetes-controller
+- https://github.com/arhat-dev/helm-charts
+version: 0.0.1
+appVersion: latest
