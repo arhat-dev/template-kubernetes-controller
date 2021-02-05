@@ -39,6 +39,7 @@ var (
 	v1_20 = semver.MustParse("1.20.0")
 )
 
+// nolint:deadcode,unused
 func createClient() (kubernetes.Interface, semver.Version) {
 	kubeConfigFile := os.Getenv(EnvKeyKubeConfig)
 	if len(kubeConfigFile) == 0 {
