@@ -30,7 +30,7 @@ _build() {
   eval "$1"
 }
 
-template-kubernetes-controller() {
+template_kubernetes_controller() {
   _build "CGO_ENABLED=${CGO_ENABLED} ${GOBUILD} -tags='netgo ${PREDEFINED_BUILD_TAGS}' ./cmd/template-kubernetes-controller"
 }
 
