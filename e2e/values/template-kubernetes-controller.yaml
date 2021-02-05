@@ -1,6 +1,6 @@
 replicaCount: 1
 
 image:
-  repository: localhost:5000/aranya
+  repository: localhost:5000/template-kubernetes-controller
   pullPolicy: Always
   tag: test-e2e
