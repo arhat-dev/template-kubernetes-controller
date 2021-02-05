@@ -102,10 +102,8 @@ start_e2e_tests() {
 
   # override default values
   chart_values_dir="build/e2e/clusters/${kube_version}"
-  cp e2e/values/emqx.yaml "${chart_values_dir}/emqx.emqx[emqx@v4.2.3].yaml"
   cp e2e/values/template-kubernetes-controller.yaml "${chart_values_dir}/default.template-kubernetes-controller[template-kubernetes-controller@master].yaml"
   cp e2e/values/template-kubernetes-controller-full.yaml "${chart_values_dir}/full.template-kubernetes-controller[template-kubernetes-controller@master].yaml"
-  cp e2e/values/arhat.yaml "${chart_values_dir}/remote.arhat[arhat-dev.arhat@latest].yaml"
 
   ${helm_stack} gen "${kube_version}"
 
